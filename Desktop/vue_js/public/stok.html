@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SITTA UT - Stok Bahan Ajar</title>
+    <link rel="stylesheet" href="css/style.css">
+    </head>
+<body>
+    <header>
+        <h1>Stok Bahan Ajar</h1>
+        <nav>
+            <a href="index.html">Home</a> |
+            <a href="tracking.html">Tracking DO</a>
+        </nav>
+    </header>
+    
+    <main id="stok-app">
+        <form>
+            <label for="search">Cari Bahan Ajar:</label>
+            <input type="text" id="search" v-model="searchQuery" placeholder="Masukkan nama atau kode">
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Kode</th>
+                    <th>Nama</th>
+                    <th>Stok</th>
+                    <th>Jumlah Pesan</th> </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in filteredBahanAjar" :key="item.kode">
+                    <td>{{ item.kode }}</td>
+                    <td>{{ item.nama }}</td>
+                    <td>{{ item.stok }}</td>
+                    <td>
+                        <div v-if="item.stok === 0" class="error">Stok Habis</div>
+                        
+                        <div v-else>
+                            <input type="number" 
+                                   v-model.number="item.jumlahPesan" 
+                                   min="0"
+                                   :max="item.stok" 
+                                   placeholder="0"
+                                   style="width: 70px;">
+                            
+                            <div v-if="item.jumlahPesan > item.stok" class="error">
+                                Stok tidak cukup (sisa: {{ item.stok }})
+                            </div>
+                        </div>
+                        
+                        </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="checkout-section">
+            <h3>Keranjang Pesanan</h3>
+            
+            <div v-if="keranjang.length === 0">
+                <p>Keranjang Anda kosong. Silakan isi jumlah pada tabel di atas.</p>
+            </div>
+
+            <div v-else>
+                <ul>
+                    <li v-for="item in keranjang" :key="item.kode">
+                        {{ item.nama }} ({{ item.jumlahPesan }} buah)
+                    </li>
+                </ul>
+                <button @click="buatPesanan">
+                    Proses Pesanan (Total {{ keranjang.length }} Jenis Item)
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script> 
+    <script src="js/dataBahanAjar.js"></script>             
+    <script src="js/stok-app.js"></script>                  
+</body>
+</html>
